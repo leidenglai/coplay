@@ -168,19 +168,33 @@
     let playerAdaptor = {};
     playerAdaptor.youku = {
         prepare: function () {
-            // just return true if ready
-            if (this._player = get('movie_player')) {
+            // youku h5 video element
+            if (this._player = query('#module_basic_player video:not([style*="display:none"]):not([style*="display: none"])')) {
                 this.setFullscreenContainer(get('player'));
+            }
+
+        },
+        _checkPlayer: function () {
+            // removed from DOM
+            if (this._player && !document.body.contains(this._player)) {
+                this.resetFullscreenContainer();
+                this.prepare();
             }
         },
         play: function () {
-            this._player.pauseVideo(false);
+            this._checkPlayer();
+            if (this._player.paused) {
+                this._player.play();
+            }
         },
         pause: function () {
-            this._player.pauseVideo(true);
+            this._checkPlayer();
+            if (!this._player.paused) {
+                this._player.pause();
+            }
         },
         seek: function (sec) {
-            this._player.nsseek(sec);
+            this._player.currentTime = sec;
         },
         isStart: function () {
             if (window.playerStart !== undefined) {
@@ -189,7 +203,8 @@
             return true;
         },
         getTime: function () {
-            return this._player.getNsData().time;
+            this._checkPlayer();
+            return this._player.currentTime;
         }
     };
     playerAdaptor.tudou = {
