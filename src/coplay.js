@@ -25,8 +25,8 @@
         return;
     }
 
-    // Supported websites: Youku, SohuTV, Tudou, TencentVideo, iQiyi, YouTube
-    let host = location.host.match(/(?:^|\.)(youku\.com|sohu\.com|tudou\.com|qq\.com|iqiyi\.com|youtube\.com|acfun\.tv|bilibili\.com|le\.com|vimeo\.com)(?:\/|$)/i);
+    // Supported websites: Youku, SohuTV, Tudou, TencentVideo, iQiyi, YouTube, MgTV
+    let host = location.host.match(/(?:^|\.)(youku\.com|sohu\.com|tudou\.com|qq\.com|iqiyi\.com|youtube\.com|acfun\.tv|bilibili\.com|le\.com|vimeo\.com|mgtv\.com)(?:\/|$)/i);
     if (!host) {
         return;
     }
@@ -600,6 +600,46 @@
                 bubbles: true,
                 cancelable: true
             }));
+        }
+    };
+    playerAdaptor.mgtv = {
+        prepare: function () {
+            if (this._player = query('#mgtv-video-wrap video')) {
+                this.setFullscreenContainer(get('mgtv-player-wrap'));
+            }
+
+        },
+        _checkPlayer: function () {
+            // removed from DOM
+            if (this._player && !document.body.contains(this._player)) {
+                this.resetFullscreenContainer();
+                this.prepare();
+            }
+        },
+        play: function () {
+            this._checkPlayer();
+            if (this._player.paused) {
+                this._player.play();
+            }
+        },
+        pause: function () {
+            this._checkPlayer();
+            if (!this._player.paused) {
+                this._player.pause();
+            }
+        },
+        seek: function (sec) {
+            this._player.currentTime = sec;
+        },
+        isStart: function () {
+            if (window.playerStart !== undefined) {
+                return playerStart;
+            }
+            return true;
+        },
+        getTime: function () {
+            this._checkPlayer();
+            return this._player.currentTime;
         }
     };
 
