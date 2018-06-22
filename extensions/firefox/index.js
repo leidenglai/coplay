@@ -15,7 +15,8 @@ const DOMAINS = [
     'acfun.tv',
     'bilibili.com',
     'le.com',
-    'vimeo.com'
+    'vimeo.com',
+    'mgtv.com'
 ];
 
 let urlOptions = {
